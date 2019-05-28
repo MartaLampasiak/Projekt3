@@ -1,18 +1,29 @@
 #include <iostream>
-#include "Plansza.hpp"
+#include "Gra.hpp"
 
 int main()
 {
 	int rozmiar = 0;
+	int ileDlaWygranej = 0;
+	std::cout << "podaj wielkosc ";
 	std::cin >> rozmiar;
+	std::cout << "podaj ilosc aby wygrac ";
+	std::cin >> ileDlaWygranej;
 
-	Plansza plansza(rozmiar);
-	//plansza.WyswietlPlansze();
-	plansza.ZamienWartosc(1, 0, 'x');
-	std::cout << "\n";
+	Gra plansza(rozmiar, ileDlaWygranej);
+
 	plansza.WyswietlPlansze();
-	plansza.ResetujPlansze();
-	plansza.WyswietlPlansze();
+	while (plansza.CzyWygrana('x') == 0)
+	{
+		int x;
+		int y;
+		std::cin >> x >> y;
+		std::cout <<  plansza.WstawWartosc(x, y, 'x');
+		system("cls");
+		plansza.WyswietlPlansze();
+	}
+
+
 
 	system("pause");
 	return 1;
