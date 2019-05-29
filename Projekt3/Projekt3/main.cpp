@@ -11,16 +11,36 @@ int main()
 	std::cin >> ileDlaWygranej;
 
 	Gra plansza(rozmiar, ileDlaWygranej);
-
 	plansza.WyswietlPlansze();
-	while (plansza.CzyWygrana('x') == 0)
+	Pole pole;
+	int czyjRuch = 0; // 0 - gracz, 1 - komputer
+
+	while ((!plansza.CzyWygrana('x') ) && (!plansza.CzyWygrana('o')) && (!plansza.CzyRemis()))
 	{
-		int x;
-		int y;
-		std::cin >> x >> y;
-		std::cout <<  plansza.WstawWartosc(x, y, 'x');
-		system("cls");
-		plansza.WyswietlPlansze();
+		if (czyjRuch == 0)
+		{
+			do {
+				std::cout << "Wprowadz poprawne wspolrzedne: ";
+				std::cin >> pole.NrWiersz >> pole.NrKolumna;
+			} while (plansza.WstawWartosc(pole.NrWiersz, pole.NrKolumna, 'x') == 0);
+			system("cls");
+			plansza.WyswietlPlansze();
+			czyjRuch = 1;
+		}
+
+		else
+		{
+			do {
+				pole = plansza.RuchKomputera();
+			} while (plansza.WstawWartosc(pole.NrWiersz, pole.NrKolumna, 'o') == 0);
+			/*do {
+				std::cout << "Wprowadz poprawne wspolrzedne: ";
+				std::cin >> pole.NrWiersz >> pole.NrKolumna;
+			} while (plansza.WstawWartosc(pole.NrWiersz, pole.NrKolumna, 'o') == 0);*/			
+			system("cls");
+			plansza.WyswietlPlansze();
+			czyjRuch = 0;
+		}
 	}
 
 

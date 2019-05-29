@@ -49,8 +49,10 @@ public:
 	bool CzyWygranaWiersz(char znak);
 	bool CzyWygranaKolumna(char znak);
 	bool CzyWygranaPrzekatne(char znak);
+	int AlphaBeta(int glebokosc, int alpha, int beta, char **plansza, bool gracz);
 	bool CzyWygrana(char znak);
-	Pole AlphaBeta(int glebokosc, int alpha, int beta, Gra plansza, bool gracz);
+	Pole RuchKomputera();
+	
 
 };
 

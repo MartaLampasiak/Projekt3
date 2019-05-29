@@ -1,15 +1,17 @@
 #include "Gra.hpp"
 
+constexpr auto oo = 2147483647;
+#define Glebokosc 6
 
 void Gra::WyswietlPlansze()
 {
 	std::cout << "   ";
 	for (int i = 0; i < rozmiar; ++i)
-		std::cout << " " << i + 1 << "  ";
+		std::cout << " " << i  << "  ";
 	std::cout << "\n\n";
 	for (int i = 0; i < rozmiar; ++i)
 	{
-		std::cout << i + 1 << "  ";
+		std::cout << i  << "  ";
 		for (int j = 0; j < rozmiar; ++j)
 		{
 			std::cout << " " << plansza[i][j] << " ";
@@ -43,24 +45,24 @@ void Gra::ResetujPlansze()
 
 bool Gra::WstawWartosc(int wiersz, int kolumna, char symbol)
 {
-	if (wiersz > rozmiar || kolumna > rozmiar || (plansza[wiersz - 1][kolumna - 1] != ' '))
+	if (wiersz >= rozmiar || kolumna >= rozmiar || (plansza[wiersz][kolumna] == 'x') || (plansza[wiersz][kolumna] == 'o'))
 		return 0;
 	else
-		plansza[wiersz - 1][kolumna - 1] = symbol;
-		return 1;
+		plansza[wiersz][kolumna] = symbol;
+	return 1;
 }
 
 bool Gra::CzyRemis()
 {
-	for (int i = 0; i < rozmiar*rozmiar; ++i)
+	for (int i = 0; i < rozmiar; ++i)
 	{
 		for (int j = 0; j < rozmiar; ++j)
 		{
 			if (plansza[i][j] == ' ')
 				return 0;
 		}
-		return 1;
 	}
+	return 1;
 }
 
 bool Gra::CzyWygranaWiersz(char znak)
@@ -177,13 +179,96 @@ bool Gra::CzyWygrana(char znak)
 		return 0;
 }
 
-Pole Gra::AlphaBeta(int glebokoscRekurencji, int alpha, int beta, Gra plansza, bool gracz)
+int Gra::AlphaBeta(int glebokoscRekurencji, int alpha, int beta, char **plansza, bool Maxymalny)
 {
-	Pole pole;
-	pole.NrWiersz;
+	int oszacowanie = 0;
 
-	if (glebokoscRekurencji == 0)
+	if (glebokoscRekurencji == Glebokosc)
+		return 0;
+	if (CzyWygrana('o'))
+		return 10;
+	if (CzyWygrana('x'))
+		return -10;
+	if (CzyRemis())
+		return 0;
+
+	if (Maxymalny)
 	{
-		return;
+		oszacowanie = -oo;
+		for (int i = 0; i < rozmiar; ++i)
+		{
+			for (int j = 0; j < rozmiar; ++j)
+			{
+				if (plansza[i][j] == ' ')
+				{
+					plansza[i][j] = 'o';
+					//oszacowanie = AlphaBeta(glebokoscRekurencji + 1, alpha, beta, plansza, 0);
+					oszacowanie = std::max(oszacowanie, AlphaBeta(glebokoscRekurencji + 1, alpha, beta, plansza, 0));
+					plansza[i][j] = ' ';
+					alpha = std::max(alpha, oszacowanie);
+
+					if (beta <= alpha)
+						break;
+				}
+			}
+		}
+		return oszacowanie;
+	}
+
+	else
+	{
+		oszacowanie = oo;
+		for (int i = 0; i < rozmiar; ++i)
+		{
+			for (int j = 0; j < rozmiar; ++j)
+			{
+				if (plansza[i][j] == ' ')
+				{
+					plansza[i][j] = 'x';
+					//oszacowanie = AlphaBeta(glebokoscRekurencji + 1, alpha, beta, plansza, 1);
+					oszacowanie = std::min(oszacowanie, AlphaBeta(glebokoscRekurencji + 1, alpha, beta, plansza, 1));
+					plansza[i][j] = ' ';
+					beta = std::min(beta, oszacowanie);
+
+					if (beta <= alpha)
+						break;
+				}
+			}
+		}
+		return oszacowanie;
 	}
 }
+
+Pole Gra::RuchKomputera()
+{
+	Pole pole;
+	int oszacowanie = -oo;
+	int wynik = 0;
+
+	for (int i = 0; i < rozmiar; ++i)
+	{
+		for (int j = 0; j < rozmiar; ++j)
+		{
+			if (plansza[i][j] == ' ')
+			{
+				plansza[i][j] = 'o';
+				wynik = AlphaBeta(0, -oo, oo, plansza, 0);
+				plansza[i][j] = ' ';
+
+				if (wynik > oszacowanie)
+				{
+					oszacowanie = wynik;
+					pole.NrWiersz = i;
+					pole.NrKolumna = j;
+				}
+			}
+		}
+	}
+	return pole;
+}
+
+
+
+
+
+
