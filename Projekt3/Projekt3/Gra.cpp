@@ -1,7 +1,7 @@
 #include "Gra.hpp"
 
 constexpr auto oo = 2147483647;
-#define Glebokosc 6
+#define Glebokosc 8
 
 void Gra::WyswietlPlansze()
 {
