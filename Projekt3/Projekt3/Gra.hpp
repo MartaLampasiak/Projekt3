@@ -5,8 +5,8 @@
 //wpolrzedne polozenia znaku na planszy (pola)
 struct Pole
 {
-	int NrWiersz;
-	int NrKolumna;
+	int NrWiersz = 0;
+	int NrKolumna = 0;
 };
 
 class Gra
@@ -20,7 +20,8 @@ private:
 
 public:
 
-	Gra(int rozmiar, int ileDlaWygranej) //tworzy plansze
+	// Konstruktor - tworzy plansze - tablice dwuwymiarowa
+	Gra(int rozmiar, int ileDlaWygranej) 
 	{
 		this->ileDlaWygranej = ileDlaWygranej;
 		this->rozmiar = rozmiar;

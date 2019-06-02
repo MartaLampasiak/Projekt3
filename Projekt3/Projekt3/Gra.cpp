@@ -1,6 +1,7 @@
 #include "Gra.hpp"
 
 constexpr auto oo = 2147483647;
+/* zmienna globalna do wpisywania glebokosci rekurencji algorytmu AlphaBeta */
 #define Glebokosc 8
 
 void Gra::WyswietlPlansze()
@@ -43,9 +44,13 @@ void Gra::ResetujPlansze()
 	}
 }
 
+/* Metoda wstawia symbol gracza 'x' lub 'o'
+   wtedy, gdy podane sa poprawne wspolrzedne
+   lub kiedy pole jest puste				 */
 bool Gra::WstawWartosc(int wiersz, int kolumna, char symbol)
 {
-	if (wiersz >= rozmiar || kolumna >= rozmiar || (plansza[wiersz][kolumna] == 'x') || (plansza[wiersz][kolumna] == 'o'))
+	if (wiersz >= rozmiar || kolumna >= rozmiar || wiersz < 0 || kolumna < 0
+		|| (plansza[wiersz][kolumna] == 'x') || (plansza[wiersz][kolumna] == 'o'))
 		return 0;
 	else
 		plansza[wiersz][kolumna] = symbol;
@@ -179,6 +184,8 @@ bool Gra::CzyWygrana(char znak)
 		return 0;
 }
 
+/* Algorytm min-max z cieciami alpha-beta - metoda dla sztucznej inteligencji */
+/* Argument 'Maksymalny' przyjmuje wartosc 0 dla czlowieka, 1 dla komputera   */
 int Gra::AlphaBeta(int glebokoscRekurencji, int alpha, int beta, char **plansza, bool Maxymalny)
 {
 	int oszacowanie = 0;
@@ -202,13 +209,12 @@ int Gra::AlphaBeta(int glebokoscRekurencji, int alpha, int beta, char **plansza,
 				if (plansza[i][j] == ' ')
 				{
 					plansza[i][j] = 'o';
-					//oszacowanie = AlphaBeta(glebokoscRekurencji + 1, alpha, beta, plansza, 0);
 					oszacowanie = std::max(oszacowanie, AlphaBeta(glebokoscRekurencji + 1, alpha, beta, plansza, 0));
 					plansza[i][j] = ' ';
-					alpha = std::max(alpha, oszacowanie);
+					alpha = std::max(alpha, oszacowanie); //wybiera wieksza wartosc alphy
 
-					if (beta <= alpha)
-						break;
+					if (beta <= alpha) //czy sprawdzac dalej
+						break; //odciecie galezi
 				}
 			}
 		}
@@ -225,13 +231,12 @@ int Gra::AlphaBeta(int glebokoscRekurencji, int alpha, int beta, char **plansza,
 				if (plansza[i][j] == ' ')
 				{
 					plansza[i][j] = 'x';
-					//oszacowanie = AlphaBeta(glebokoscRekurencji + 1, alpha, beta, plansza, 1);
 					oszacowanie = std::min(oszacowanie, AlphaBeta(glebokoscRekurencji + 1, alpha, beta, plansza, 1));
 					plansza[i][j] = ' ';
 					beta = std::min(beta, oszacowanie);
 
-					if (beta <= alpha)
-						break;
+					if (beta <= alpha) //czy sprawdzac dalej
+						break; //odciecie galezi
 				}
 			}
 		}
@@ -239,6 +244,7 @@ int Gra::AlphaBeta(int glebokoscRekurencji, int alpha, int beta, char **plansza,
 	}
 }
 
+/* metoda dla sztucznej inteligencji */
 Pole Gra::RuchKomputera()
 {
 	Pole pole;

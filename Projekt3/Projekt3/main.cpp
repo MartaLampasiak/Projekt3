@@ -19,7 +19,7 @@ int main()
 	
 	std::cout << "\n                         Podaj wielkosc planszy: ";
 	std::cin >> rozmiar;
-	while (rozmiar <= 0) //wielkosc musi byc wieksza od 0
+	while (rozmiar <= 2) //wielkosc musi byc wieksza od 2
 	{
 		std::cout << "             Bledna wielkosc planszy, podaj poprawna wielkosc: ";
 		std::cin >> rozmiar;
